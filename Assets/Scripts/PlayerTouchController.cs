@@ -5,49 +5,43 @@ using UnityEngine.UI;
 
 public class PlayerTouchController : MonoBehaviour
 {
-    [SerializeField] float Speed = 1;
     [SerializeField] Text pontosText;
-    [SerializeField] Text jogoText;
-    Rigidbody2D _rigidibody;
-    bool touching = false;
+    [SerializeField] GameObject jogoText;
+    Animator _animator;
     private int pontos;
     public int Pontos { get { return pontos; } set { pontos = value; pontosText.text = "PONTUAÇÃO: " + pontos; } }
 
     void Start()
     {
-        _rigidibody = GetComponent<Rigidbody2D>();
+        _animator = GetComponent<Animator>();
         Pontos = 0;
+
     }
 
     void Update()
     {
-
-        // Mostrar o texto quando o jogador estiver tocando na tela
-        if (touching)
+        if (Input.touchCount > 0)
         {
-            jogoText.text = "Capture todas as gemas";
-        }
-        else
-        {
-            jogoText.text = "";
-        }
-
-    }
-
-    private void FixedUpdate()
-    {
-        float horizontal = Input.GetAxis("Horizontal") * Speed;
-        float vertical = Input.GetAxis("Vertical") * Speed;
-
-        if (horizontal != 0 || vertical != 0)
-        {
-            touching = true;
+            jogoText.SetActive(true);
+            _animator.SetTrigger("Move");
+            Touch t = Input.GetTouch(0);
+            Vector3 pos = Camera.main.ScreenToWorldPoint(t.position);
+            transform.position = pos;
         }else{
-            touching = false;
+            jogoText.SetActive(false);
         }
 
-        //transform.Translate (horizontal, vertical, 0);
-        _rigidibody.velocity = new Vector3(horizontal * Speed, vertical * Speed, 0);
+        // if (touching)
+        // {
+        //     // Mostrar o texto quando o jogador estiver tocando na tela
+        //     jogoText.text = "Capture todas as gemas";
+        //     // Permitir a movimentação do personagem somente quando tocadado
+        // }
+        // else
+        // {
+        //     jogoText.text = "";
+            
+        // }
     }
 
     private void OnTriggerEnter2D(Collider2D other)

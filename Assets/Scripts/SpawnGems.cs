@@ -5,34 +5,42 @@ using UnityEngine;
 public class SpawnGems : MonoBehaviour
 {
     [SerializeField] GameObject Gema;
-    [SerializeField] Transform[] SpawnPontos = new Transform[6];
+    [SerializeField] Transform[] SpawnPoints = new Transform[6];
     GameObject newGema;
+    int point;
 
     void Start()
     {
-        RandomSpawn();RandomSpawn();RandomSpawn();       
+        point = Random.Range(0, 6);
+        newGema = Instantiate(Gema, SpawnPoints[point].position, Quaternion.identity);
+        Debug.Log(newGema.name + " no " + SpawnPoints[point]);
+        Destroy(newGema, Random.Range(3, 7));
+        Debug.Log(newGema.name + " destruída");
+
+        RandomSpawn();
+        RandomSpawn();
     }
 
     void Update()
     {
-        if(GameObject.FindGameObjectsWithTag("gema").Length != 3)
+        if (GameObject.FindGameObjectsWithTag("gema").Length != 3)
         {
             RandomSpawn();
         }
-        foreach (var item in GameObject.FindGameObjectsWithTag("gema"))
-        {
-            if(item.transform.position == newGema.transform.position)
-            {
-                RandomSpawn();
-            }
-        }        
     }
 
-    void RandomSpawn()    
+    void RandomSpawn()
     {
-        newGema = Instantiate(Gema, SpawnPontos[Random.Range(0, 6)].position, Quaternion.identity);
-        Destroy(newGema, Random.Range(3,7));           
+        do {
+            point = Random.Range(0, 6);
+        } while (SpawnPoints[point].position == GameObject.FindGameObjectWithTag("gema").transform.position);
+
+        newGema = Instantiate(Gema, SpawnPoints[point].position, Quaternion.identity);
+        Debug.Log(newGema.name + " no " + SpawnPoints[point]);
+        Destroy(newGema, Random.Range(3, 7));        
+        Debug.Log(newGema.name + " destruída");
     }
+}
 
     /*
     void RandomSpawn()
@@ -62,4 +70,4 @@ public class SpawnGems : MonoBehaviour
         Destroy(newGema, Random.Range(3,7));
     }
     */
-}
+
