@@ -5,49 +5,45 @@ using UnityEngine.UI;
 
 public class PlayerTouchController : MonoBehaviour
 {
+    [SerializeField] float Dist = 200;
     [SerializeField] Text pontosText;
     [SerializeField] GameObject jogoText;
-    Animator _animator;
+    [SerializeField] AudioSource collectSound;
+    Animator _animator;    
     private int pontos;
     public int Pontos { get { return pontos; } set { pontos = value; pontosText.text = "PONTUAÇÃO: " + pontos; } }
 
     void Start()
     {
         _animator = GetComponent<Animator>();
+        collectSound = GetComponent<AudioSource>();
         Pontos = 0;
-
     }
 
-    void Update()
+    private void OnMouseOver()  
     {
-        if (Input.touchCount > 0)
+        // Mostra o texto 
+        jogoText.SetActive(true);
+        // Ativa a animação de flutuação
+        _animator.SetTrigger("Move");
+        // Pega a informação de touch para traçar o movimento do personagem
+        Touch t = Input.GetTouch(0);
+        if (t.phase == TouchPhase.Moved)
         {
-            jogoText.SetActive(true);
-            _animator.SetTrigger("Move");
-            Touch t = Input.GetTouch(0);
-            Vector3 pos = Camera.main.ScreenToWorldPoint(t.position);
-            transform.position = pos;
-        }else{
-            jogoText.SetActive(false);
+            transform.position += (Vector3)t.deltaPosition / Dist;
         }
+    }
 
-        // if (touching)
-        // {
-        //     // Mostrar o texto quando o jogador estiver tocando na tela
-        //     jogoText.text = "Capture todas as gemas";
-        //     // Permitir a movimentação do personagem somente quando tocadado
-        // }
-        // else
-        // {
-        //     jogoText.text = "";
-            
-        // }
+    private void OnMouseExit()
+    {
+        jogoText.SetActive(false);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("gema"))
         {
+            collectSound.Play();
             Pontos += 10;
             Destroy(other.gameObject);
         }

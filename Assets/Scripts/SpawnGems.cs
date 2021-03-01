@@ -5,25 +5,24 @@ using UnityEngine;
 public class SpawnGems : MonoBehaviour
 {
     [SerializeField] GameObject Gema;
-    [SerializeField] Transform[] SpawnPoints = new Transform[6];
+    [SerializeField] Transform[] SpawnPoints;
+    GameObject[] Gemas;
     GameObject newGema;
-    int point;
 
     void Start()
     {
-        point = Random.Range(0, 6);
-        newGema = Instantiate(Gema, SpawnPoints[point].position, Quaternion.identity);
-        Debug.Log(newGema.name + " no " + SpawnPoints[point]);
+        int r;
+        newGema = Instantiate(Gema, SpawnPoints[r = Random.Range(0, 6)].position, Quaternion.identity);
+        Debug.Log(newGema.name + " no " + SpawnPoints[r].name);
         Destroy(newGema, Random.Range(3, 7));
-        Debug.Log(newGema.name + " destruída");
-
         RandomSpawn();
         RandomSpawn();
     }
 
     void Update()
     {
-        if (GameObject.FindGameObjectsWithTag("gema").Length != 3)
+        Gemas = GameObject.FindGameObjectsWithTag("gema");
+        if (Gemas.Length != 3)
         {
             RandomSpawn();
         }
@@ -31,43 +30,20 @@ public class SpawnGems : MonoBehaviour
 
     void RandomSpawn()
     {
-        do {
-            point = Random.Range(0, 6);
-        } while (SpawnPoints[point].position == GameObject.FindGameObjectWithTag("gema").transform.position);
-
+        int point = Random.Range(0, 6);
+        foreach (var item in Gemas)
+        {
+            if (item.transform.position == SpawnPoints[point].position)
+            {
+                while (item.transform.position == SpawnPoints[point].position)
+                {
+                    point = Random.Range(0, 6);
+                }
+            }
+        }
         newGema = Instantiate(Gema, SpawnPoints[point].position, Quaternion.identity);
-        Debug.Log(newGema.name + " no " + SpawnPoints[point]);
-        Destroy(newGema, Random.Range(3, 7));        
-        Debug.Log(newGema.name + " destruída");
+        Debug.Log(newGema.name + " no " + SpawnPoints[point].name);
+        Destroy(newGema, Random.Range(3, 7));
     }
 }
-
-    /*
-    void RandomSpawn()
-    {
-        //Sorteia um número para selecionar um dos pontos de spawn e instanciar uma gema nele
-        int p1 = Random.Range(0, 6);
-        Vector3 SpawnPosition = SpawnPontos[p1].position;
-        GameObject newGema = Instantiate(Gema, SpawnPosition, Quaternion.identity);
-        Destroy(newGema, Random.Range(3,7));
-
-        //Sorteia um novo número e verifica se não é repetido para então selecionar o respectivo ponto de spawn e instanciar outra gema nele        
-        int p2 = Random.Range(0, 6);
-        do
-        {
-            p2 = Random.Range(0, 6);
-        } while (p2 == p1);
-        SpawnPosition = SpawnPontos[p2].position;
-        newGema = Instantiate(Gema, SpawnPosition, Quaternion.identity);
-        Destroy(newGema, Random.Range(3,7));
-        int p3 = Random.Range(0, 6);
-        do
-        {
-            p3 = Random.Range(0, 6);
-        } while (p3 == p1 | p3 == p2);
-        SpawnPosition = SpawnPontos[p3].position;
-        newGema = Instantiate(Gema, SpawnPosition, Quaternion.identity);
-        Destroy(newGema, Random.Range(3,7));
-    }
-    */
 
