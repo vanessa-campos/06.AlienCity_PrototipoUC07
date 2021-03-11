@@ -4,10 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - tiro
-  - pedra
-  - New Tag
   - gema
+  - Projetil
+  - Quebravel
+  - lava
   layers:
   - Default
   - TransparentFX
